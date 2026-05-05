@@ -20,12 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.bumangapp.network.RegisterRequest
-import com.example.bumangapp.network.RetrofitClient
 import kotlinx.coroutines.launch
-
-// Asegúrate de tener importados tus archivos de Retrofit
-// import com.tu.paquete.RetrofitClient
-// import com.tu.paquete.RegisterRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,13 +29,14 @@ fun RegisterScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF3F4F6)) // Fondo gris claro
+            .background(Color(0xFFF3F4F6))
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -127,6 +123,16 @@ fun RegisterScreen(navController: NavController) {
             )
         )
 
+        // MENSAJE DE ERROR
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(32.dp))
 
         // Botón Registrarse
@@ -134,22 +140,20 @@ fun RegisterScreen(navController: NavController) {
             onClick = {
                 coroutineScope.launch {
                     try {
-                        // Cambia "RegisterRequest" si tu modelo se llama diferente
-                        val response = RetrofitClient.apiService.register(
-                            RegisterRequest(
-                                name,
-                                email,
-                                password
-                            )
+                        val authResponse = RetrofitClient.instance.register(
+                            RegisterRequest(name, email, password)
                         )
-                        if (response.success) {
-                            // Si el registro es exitoso, lo mandamos al login para que entre
+                        if (authResponse.success) {
+                            // Registro exitoso, ir al login
                             navController.navigate("login") {
                                 popUpTo("register") { inclusive = true }
                             }
+                        } else {
+                            errorMessage = authResponse.message
                         }
                     } catch (e: Exception) {
                         Log.e("BUMANGAPP_REGISTER", "Error: ${e.message}")
+                        errorMessage = "Por favor complete todos los campos"
                     }
                 }
             },

@@ -24,7 +24,6 @@ data class Coordinate(
 
 // --- ESTRUCTURAS PARA AUTENTICACIÓN ---
 
-// Lo que enviamos desde Android a Laravel
 data class LoginRequest(val email: String, val password: String)
 
 data class RegisterRequest(val name: String, val email: String, val password: String)
@@ -33,7 +32,7 @@ data class RegisterRequest(val name: String, val email: String, val password: St
 data class AuthResponse(
     val success: Boolean,
     val message: String,
-    val user: UserData? = null // Puede ser null si falla el login
+    val user: UserData? = null
 )
 
 // Los datos del usuario que vienen en la respuesta
