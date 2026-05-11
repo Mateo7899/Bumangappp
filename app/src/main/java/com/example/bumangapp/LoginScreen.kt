@@ -141,8 +141,13 @@ fun LoginScreen(navController: NavController, viewModel: AppStateViewModel) {
                         withContext(Dispatchers.Main) {
                             if (authResponse.success) {
                                 viewModel.emailUsuario = email
+                                viewModel.isPremium = authResponse.user?.is_premium == 1
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    SessionManager(context).saveLoginState(true, email)
+                                    SessionManager(context).saveLoginState(
+                                        true,
+                                        email,
+                                        authResponse.user?.is_premium == 1
+                                    )
                                 }
                                 navController.navigate("main_menu") {
                                     popUpTo("login") { inclusive = true }

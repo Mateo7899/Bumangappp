@@ -14,15 +14,20 @@ class SessionManager(private val context: Context) {
 
     companion object {
         val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
-        val USER_EMAIL = stringPreferencesKey("user_email") // NUEVO
+        val USER_EMAIL = stringPreferencesKey("user_email")
+        val IS_PREMIUM = booleanPreferencesKey("is_premium") // NUEVO
     }
 
-    // Guardar login con email
-    suspend fun saveLoginState(isLoggedIn: Boolean, email: String = "") {
+    suspend fun saveLoginState(isLoggedIn: Boolean, email: String = "", isPremium: Boolean = false) {
         context.dataStore.edit { preferences ->
             preferences[IS_LOGGED_IN] = isLoggedIn
-            preferences[USER_EMAIL] = email // NUEVO
+            preferences[USER_EMAIL] = email
+            preferences[IS_PREMIUM] = isPremium // NUEVO
         }
+    }
+
+    val isPremium: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[IS_PREMIUM] ?: false
     }
 
     // Leer si está logueado

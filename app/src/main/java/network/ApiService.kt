@@ -22,4 +22,7 @@ interface ApiService {
 
     @POST("api/update-password")
     suspend fun updatePassword(@Body request: Map<String, String>): AuthResponse
+
+    @POST("api/upgrade-premium")
+    suspend fun upgradePremium(@Body request: Map<String, String>): AuthResponse
 }
