@@ -35,19 +35,21 @@ fun BumangAppNavigation() {
 
     val sessionManager = SessionManager(context = LocalContext.current)
     val isLoggedIn by sessionManager.isLoggedIn.collectAsState(initial = null)
-    val userEmail by sessionManager.userEmail.collectAsState(initial = null) // null = aún cargando
+    val userEmail by sessionManager.userEmail.collectAsState(initial = null)
+    val isPremium by sessionManager.isPremium.collectAsState(initial = false)
 
-    // Cargar email en el viewModel cuando esté disponible
-    LaunchedEffect(userEmail) {
+    LaunchedEffect(userEmail, isPremium) {
         if (!userEmail.isNullOrEmpty()) {
             appViewModel.emailUsuario = userEmail!!
+            appViewModel.isPremium = isPremium
         }
     }
 
-    // Esperamos AMBOS valores antes de dibujar
-    if (isLoggedIn != null && userEmail != null) {
+    // Esperamos a que isLoggedIn tenga un valor real (no null)
+    if (isLoggedIn != null) {
         NavHost(
             navController = navController,
+            // La decisión se basa SOLO en isLoggedIn
             startDestination = if (isLoggedIn == true) "main_menu" else "welcome"
         ) {
             composable(route = "welcome") { WelcomeScreen(navController) }

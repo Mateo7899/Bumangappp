@@ -363,6 +363,7 @@ fun VistaDetalleRuta(ruta: RutaBus, onBack: () -> Unit) {
 
 @Composable
 fun VistaAjustes(navController: NavController, vm: AppStateViewModel) {
+    val ctx = LocalContext.current
     var dialogPw by remember { mutableStateOf(false) }
     var nuevaPass by remember { mutableStateOf("") }
     var mensajePw by remember { mutableStateOf("") }
@@ -447,6 +448,10 @@ fun VistaAjustes(navController: NavController, vm: AppStateViewModel) {
                 Button(
                     onClick = {
                         vm.emailUsuario = ""
+                        vm.isPremium = false
+                        coroutineScope.launch {
+                            SessionManager(ctx).saveLoginState(false, "", false)
+                        }
                         navController.navigate("login") { popUpTo("main_menu") { inclusive = true } }
                     },
                     modifier = Modifier.fillMaxWidth().height(54.dp),

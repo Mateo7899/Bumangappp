@@ -158,7 +158,7 @@ fun LoginScreen(navController: NavController, viewModel: AppStateViewModel) {
                         }
                     } catch (e: Exception) {
                         withContext(Dispatchers.Main) {
-                            errorMessage = "Por favor digite un correo valido"
+                            errorMessage = "Por favor digite correctamente sus datos"
                             android.util.Log.e("BUMANGAPP_LOGIN", "Error: ${e.message} - ${e.cause}")
                         }
                     }
